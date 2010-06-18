@@ -8,6 +8,8 @@ GenerateCMMData will create a new folder (inside the current folder) containing 
 
 
 
+To build the application see BuildForMac/README.html
+
 
 
 The format for CMM hole position data files is as follows:
