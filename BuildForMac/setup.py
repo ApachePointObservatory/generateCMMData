@@ -6,6 +6,7 @@ Usage:
 
 History:
 2010-06-14 ROwen
+2010-06-24 ROwen    Modified for new package layout.
 """
 import os
 import shutil
@@ -15,9 +16,10 @@ from setuptools import setup
 
 # add various bits to the path
 pkgRoot = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+pythonRoot = os.path.join(pkgRoot, "python", "generateCMMData")
 if os.path.isfile("extraPaths.txt"):
     with file("extraPaths.txt") as pathFile:
-        pathList = [pkgRoot]
+        pathList = [pythonRoot]
         for pathStr in pathFile:
             pathStr = pathStr.strip()
             if not pathStr or pathStr.startswith("#"):
@@ -29,7 +31,7 @@ import GenerateCMMData
 
 appName = "GenerateCMMData"
 mainScript = "GenerateCMMData.py"
-mainProg = os.path.join(pkgRoot, "runGenerateCMMData.py")
+mainProg = os.path.join(pythonRoot, "runGenerateCMMData.py")
 appPath = os.path.join("dist", appName + ".app")
 iconFile = "%s.icns" % appName
 versStr = GenerateCMMData.__version__
@@ -75,7 +77,7 @@ setup(
 )
 
 shutil.copy(
-    os.path.join(pkgRoot, mainScript),
+    os.path.join(pythonRoot, mainScript),
     os.path.join(appPath, "Contents", "Resources"),
 )
 

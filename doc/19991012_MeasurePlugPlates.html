@@ -1,0 +1,368 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+   <title>How to Measure Plug Plates</title>
+</head>
+<body>
+<h1>How to Measure Plug Plates</h1>
+
+<h3>Using the Brown &amp; Sharpe Coordinate Measuring Machine</h3>
+
+<p><cite>Sloan Digital Sky Survey Telescope Technical Note 19991012-17</cite></p>
+
+<p><i>Russell Owen</i></p>
+
+<ul>
+   <li><a href="#Hints">Hints</a>
+   
+   <li><a href="#Download">Download Hole Position Files</a>
+   
+   <li><a href="#StartCMM">Start the CMM</a>
+   
+   <li><a href="#Calibrate">Calibrate</a>
+   
+   <li><a href="#MeasurePlates">Measure Plates</a>
+   
+   <li><a href="#ShutdownCMM">Shut Down the CMM</a>
+   
+   <li><a href="#AnalyzeData">Analyze the Data</a>
+   
+   <li><a href="#History">History</a>
+</ul>
+
+<h2><a name="Hints"></a>Hints</h2>
+
+<ul>
+    <li>How to get out of trouble:
+    
+    <ul>
+        <li>Push a red stop button if the machine looks like it will crash into something.
+        
+        <li>If the probe gets jammed, pushing a red stop button will allow you to move the head by hand.
+    </ul>
+    
+    <li><b>Be gentle when taking manual probe touches. It is easy to damage the probe head with a hard hit</b>, especially a <b>downward</b> hit. Please press the Slow button on the hand paddle and/or turn down the velocity before taking manual hits.
+    
+    <li>If the CMM misses a touch and you want to take it manually:
+    <ul>
+        <li>Look for a pair of icons in the toobar that set the mode to Manual or DCC; one of them looks like a hollow right-pointing arrow.
+        <li>Toggle the machine to manual mode
+        <li>Take the hit (if you mess it up you can press the Erase Hit button on the hand paddle and try again)
+        <li>Toggle the machine to DCC mode
+    </ul>
+</ul>
+
+<h2><a name="Download"></a>Download Position Files</h2>
+
+<ul>
+	<li>Download plDrillPos-xxxx.par hole position files using the link in the email announcement.
+	
+	<li>Drag these plDrillPos files onto GenerateCMMData to create Nxxxx files for the CMM.
+	
+	<li>Transfer the Nxxxx files to the CMM.
+</ul>
+
+<h2><a name="StartCMM"></a>Start the CMM</h2>
+
+<ul>
+   <li>If the CMM has not been used for awhile, drain the moisture from the air drier (detach the air hose from the inlet pipe of the air dryer and let the dryer vent air and moisture, then reconnect the inlet air).
+   
+   <li>Install the tip:
+   
+   <ul>
+        <li>If PCDMIS is running push the Probe Enable button on the hand paddle to disable probe hits.
+        
+        <li>Mount a 1.0 mm diameter x 21 mm long tip.
+      
+        <li>Make sure the tip is clean and the ruby looks good (unmarked).
+   </ul>
+   
+   
+   <li>Clean the raceways of the CMM.
+   
+   <li>Check the marble table top and clean it if it's dusty or dirty.
+   
+   <li>If the CMM is off, turn it on:
+   
+   <ul>
+      <li>Turn the key switch on.
+      
+      <li>Release both stop button(s), if they are engaged.
+      
+      <li>Wait for the "run" light on the hand paddle to stop blinking and some of the other lights to go off.
+      
+      <li>Push the green "run" switch on the CMM controller and hold it for a few seconds until the controller clicks.
+   </ul>
+   
+   <li>Log in as username "sdss", location "INSTRUMENT_SHOP".
+   
+   <li>Double-click "Plug Plates..." (alias on desktop) to run the
+   part program. If that icon is missing, look for the CMM program in
+   Z:plates\CMM Program..
+   
+   <li>Mount the plug plate positioning fixture on the CMM. Mount it so that the fixture look like an upside-down T. The empty pin hole in the periphery will be at the back left. Screw it down well.
+   
+   <li>Clean the top surface of the plug plate positioning fixture.
+</ul>
+
+<h2><a name="Calibrate"></a>Calibrate</h2>
+
+<h3>Calibrate the Tip</h3>
+
+<p>Calibrate the tip if you installed a tip or if you are not sure the current tip was the one you calibrated last.
+
+<ul>
+    <li>Mount the calibration ball, screwing it down snugly to
+    the table.
+    
+    <li>Clean the upper calibration ball and the probe tip.
+    
+    <li>Look at the part program. Near the beginning is a line that loads the probe calibration file. Click on that line to put the cursor in that line.
+    
+    <li>Press the F9 key. This should bring up a dialog box labelled "Probe Utilities".
+    
+    <li>Press the Measure button in the Probe Utilities dialog box.
+    
+    <li>A new dialog box "Measure Probe" will pop up; press the Measure button on it.
+    
+    <li>When asked if the calibration fixture has moved, say it has.
+    
+    <li>When prompted to "Please rotate to..." press the OK button on the screen or the Done button on the hand paddle.
+    
+    <li>Press the "Slow" button on the hand paddle; it should be lit.
+    
+    <li>When asked, take a single <b>gentle</b> hit down on the top of the upper calibration ball.
+    
+    <li>Make sure the hand paddle is set to full velocity.
+    
+    <li>Press the Done button.
+    
+    <li>The ball will be measured.
+    
+    <li>Press the Results button in the dialog box. The reported StdDev should be less than 0.002.
+</ul>
+
+<h3>Calibrate the Plug Plate Fixture</h3>
+
+<p>The CMM program always starts by calibrating the plug plate positioning fixture.
+
+<ul>
+    <li>Make sure no plate is mounted, just the bare calibration fixture.
+    
+    <li>Run the CMM program by clicking the "!" icon.
+    
+    <li>Press "Done" on the control box or &lt;return&gt; on the keyboard when it asks you to rotate the tip to 0.
+    
+    <li>The CMM should now slowly take one hit through the back left hole of the positioning fixture. In case of trouble:
+    <ul>
+        <li>If the CMM looks like it will crash into something, press a stop button! Then release it and move the probe clear. Then run the program again and immediately put it into manual mode and take the hit yourself (see <a href="#Hints">Hints</a> above).
+        <li>If it misses the hole, take the hit yourself (see <a href="#Hints">Hints</a> above).
+    </ul>
+    
+   <li>The CMM will continue by measuring the hole, the top surface of the positioning fixture and the front pin. It will then retract.
+
+   <li>The fixture is now fully calibrated.
+</ul>
+
+<h2><a name="MeasurePlates"></a>Measure Plates</h2>
+
+<ul>
+   <li>Check that the plate is clean.
+   
+   <li>Mount the plate on the positioning fixture:
+   <ul>
+      <li>Mount plates with the tab to the front, with the engraved number up (so that you can read it!).
+      
+      <li>Make sure each plate is fully pushed down over the two pins.
+      
+      <li>If the plate bows up in the middle then screw it down at the center hole. If the plate bows up at the edges then carefully place weights at the edge (where the CMM will not hit them).
+   </ul>
+   
+   <li>Enter the plate number in the log sheet. Include the date and every plate measured including notes if anything was strange.
+   
+   <li>Enter the plate ID when requested, e.g. 194A (this information is used for the
+   header of the output file; it is not used to find the hole position file). Type &lt;Return&gt; to continue. If you do not have any more plates to measure then press "Cancel" and say "No" when it asks if you want to print the report.
+   
+   <li>Locate the hole position input file when requested, e.g. N194A:
+   
+   <ul>
+      <li>Normal plates have only a few holes measured. For these
+      plates, the hole position files are named
+      N&lt;plate_number&gt;, e.g. N120.
+      
+      <li>Certain plates (typically A plates) should have all
+      reachable holes measured. For these plates, the hole position
+      files are named N&lt;plate_number&gt;A, e.g. N120A.
+   </ul>
+   
+   
+   <li>Note: if you cancel from this dialog, you will be asked for
+   the plate ID number again (i.e. you will start over on measuring
+   this plate).
+   
+   <li>The science holes will now be measured automatically. If you
+   have a problem during this process:
+   
+   <ul>
+      <li>If it's the first hole, perhaps you selected the wrong hole
+      position file. Try the plate again. (Find the "MEAS_PLATE"
+      (???) label in the part program, right-click just to the left
+      of it in the narrow column at the left, select "Run from
+      Command" (???)).
+      
+      <li>If the machine stops with a complaint about waiting for the
+      probe to release, try the following:
+      
+      <ul>
+         <li>Press Probe Enable on the hand paddle, so the light
+         blinks.
+         
+         <li>Gently flick or move the probe a few times to make the
+         red light go on and off.
+         
+         <li>Press Probe Enable again so the light goes steady.
+         
+         <li>Press Done and the machine should resume measuring.
+         
+         <li>Report the problem to Mike; it means that the probe head
+         needs an overhaul.
+      </ul>
+      
+      
+      <li>To try another plate without recalibrating:
+      
+      <ul>
+         <li>Look through the part program to find the line
+         "MEAS_PLATE = LABEL/"
+         
+         <li>Right-click the mouse in the margin to the left of that
+         line
+         
+         <li>Select "Run from Cursor" (approx.)
+      </ul>
+      
+      
+      <li>If that doesn't work, try running the part program from the
+      beginning. Cancel the current program (and if it asks if you
+      want to print the report, say "No") and run it again by
+      pressing the "!" icon.
+      
+      <li>To really start over:
+      
+      <ul>
+         <li>Quit PCDMIS
+         
+         <li>Shut off the CMM (using the key switch)
+         
+         <li>Clear the air hose of water
+         
+         <li>Power up the CMM
+         
+         <li>Run the part program again
+      </ul>
+      
+   </ul>
+   
+   
+   <li>Measurements are stored in Z:plates\meas\
+   
+   <li>Please leave hole position files on Z (at least those for the
+   A plates, but it's easier to just leave all of them) so we can
+   remeasure plates whenever we want.
+</ul>
+
+<h2><a name="ShutdownCMM"></a>Shut Down the CMM</h2>
+
+<ul>
+   <li>When you are done measuring plates, press "Cancel" when it
+   asks for a plug plate ID. It will ask you if you want to print the
+   report. Click "No".
+   
+   <li>You can then quit PC-DMIS. It will present an error about not being able to update the program; ignore it. Or if you wish to avoid the error message you can close the program file (File: Close) before you quit PC-DMIS.
+   
+   <li>Log out.
+   
+   <li>Remove the plug plate positioning fixture from the CMM table.
+   
+   <li>Push in a red stop button..
+</ul>
+
+<h2><a name="AnalyzeData"></a>Analyzing the Data</h2>
+
+<ul>
+    <li>The measurements must be checked for each plate before shipping the plate. The analysis is performed on the fiber tester Mac.
+   
+    <li>If you are using a USB jump drive, copy the measured hole data (D... files) from <code>meas</code> onto it before leaving the CMM.
+
+    <li>Copy the files to the fiber tester Mac
+    
+    <li>Analyze the files by dropping them onto "FitPlugPlateMeas".
+    
+   <li>If any plate does not meet the following specifications, hold
+   onto it and talk to Larry, Russell or Mike about what to do:
+   
+   <ul>
+      <li>Rad Resid RMS 0.009 mm or less.
+      
+      <li>Diameter Error Max 0.025 mm or less. (As of 2010-06-24 the plDrillPos files for MARVELS plates still have the wrong hole diameter, so you can ignore the diameter error for MARVELS plates.)
+   </ul>   
+</ul>
+
+<h2><a name="History"></a>History</h2>
+
+<ul>
+    <li>17: Updated instructions for new CMM and production code. R.O. 2010-06-24
+    
+	<li>16: Updated instructions for sharing files with the CMM. R.O. 2007-06-01
+
+	<li>15: Adjusted for comments from Michaal Spector and Melinda Wall. R.O. 2005-06-22
+
+	<li>14: Updated the file download instructions (now that .zip files can be obtained via http). Added instructions for transferring files to/from the CMM via the USB thumb drive, as suggested by Dru Metz (since file sharing is broken). R.O. 2005-06-10
+
+   <li>13: Added Melissa Thomas's changes, made further changes of my own
+   including modified for new login system. R.O. 2003-08-12
+   
+   <li>12: Modified for the new CMM control software (version 1.5 of
+   it). R.O. 2003-02-28
+   
+   <li>11: (no History entry)
+   
+   <li>10: Modified for part program version 3.0 and use of the plug
+   plate alignment fixture. R.O. 2001-11-20
+   
+   <li>9: Changed &lt;return&gt; to &lt;Enter&gt; and ESC to
+   &lt;ESC&gt; to be improve consistency with the keyboard and
+   internally. R.O.
+   
+   <li>8: Updated set time info to work around Y2K off-by-one-day
+   bug. Apr 5, 2001. R.O.
+   
+   <li>7: Updated for llf 2.0, which asks for a hole position data
+   file for each plate. Also made various general improvements,
+   including adding the Hints section. Nov 14, 2000. R.O.
+   
+   <li>6: Fixed the hole diameter for the alignment points (the claim
+   was 1/8" but the reality is 1/4"). Added a description of where to
+   mount the plate. Sept. 22, 2000. R.O.
+   
+   <li>5: Fixed an error in file copying directions. Improved startup
+   sequence. June 19, 2000. R.O.
+   
+   <li>4: Modified the instructions for setting the clock based on
+   the non-Y2K boot process. Modified instructions for purging old
+   data and saving new data. May 30, 2000. R.O.
+   
+   <li>3: Removed an outdated note; noted that setting the computer
+   time during startup doesn't work due to Y2K problems. Still need
+   instructions for setting the time. May 15, 2000. R.O.
+   
+   <li>2: Changed tip diameter to 1.5 mm; insert file name earlier.
+   April 19, 2000. R. Owen
+   
+   <li>1: First version released as an SDSS technical note. Oct 12,
+   1999, R. Owen
+</ul>
+</body>
+</html>
