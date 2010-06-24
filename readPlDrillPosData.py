@@ -4,6 +4,7 @@ Reject hole outside the range of our Brown and Sharp 7-10-7 CMM
 
 History
 2010-06-11 ROwen    Extracted from Generate37Holes.py
+2010-06-24 ROwen    Modified to handle modern par files with zDrill (and older files without).
 """
 from __future__ import with_statement
 import math
@@ -21,7 +22,7 @@ xMax, yMax = 490.0, 315.0
 holenames = ("OBJECT", "GUIDE", "QUALITY")  # holes to use
 
 # search expression for valid data
-dataRegEx = re.compile(r'^drillpos +(?P<name>\w+) +\{.+\} +[0-9e+-.]+ +[0-9e+-.]+ +[0-9e+-.]+ +[0-9e+-.]+ +(?P<x>[0-9e+-.]+) +(?P<y>[0-9e+-.]+) +[0-9e+-.]+ +[0-9e+-.]+ +(?P<dia>[0-9e+-.]+)$', re.IGNORECASE)
+dataRegEx = re.compile(r'^drillpos +(?P<name>\w+) +\{.+\} +[0-9e+-.]+ +[0-9e+-.]+ +[0-9e+-.]+ +[0-9e+-.]+ +(?P<x>[0-9e+-.]+) +(?P<y>[0-9e+-.]+) +[0-9e+-.]+ +[0-9e+-.]+( +[0-9e+-.]+)? +(?P<dia>[0-9e+-.]+)$', re.IGNORECASE)
 
 def readPlDrillPosData(inFilePath):
     """Read data from a plDrillPos file
@@ -67,4 +68,6 @@ def readPlDrillPosData(inFilePath):
                     # append data to list
                     dataList.append(dataDict)
 
+    if len(dataList) == 0:
+        raise RuntimeError("No valid data found in %r: " % (inFilePath,))
     return dataList, nHolesRead

@@ -15,6 +15,8 @@ History
 2010-06-16 ROwen    Version 2.0:
                     - Made debug mode explicit.
                     - Modified to not use RO.procFiles.
+2010-06-24 ROwen    Version 2.1:
+                    - Handle modern plDrillPos files with zDrill field (and older files without)
 """
 
 import os
@@ -28,7 +30,7 @@ import GenerateAllHoles
 DOSTerm = "\r\n"
 Debug = False
 
-__version__ = "2.0"
+__version__ = "2.1"
 
 FileNumberRE = re.compile(r'plDrillPos-(\d\d\d\d)\.par$')
 
