@@ -36,6 +36,4 @@ Example:
 -316.75745   182.88000   0.0   6.350
 
 
-Russell Owen
-2010-06-18
-
+See SDSS technical note 19991012 (in this directory) for full instructions for measuring a plug plate.
