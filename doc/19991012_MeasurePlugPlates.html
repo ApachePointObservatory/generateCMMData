@@ -10,12 +10,14 @@
 
 <h3>Using the Brown &amp; Sharpe Coordinate Measuring Machine</h3>
 
-<p><cite>Sloan Digital Sky Survey Telescope Technical Note 19991012-17</cite></p>
+<p><cite>Sloan Digital Sky Survey Telescope Technical Note 19991012-18</cite></p>
 
 <p><i>Russell Owen</i></p>
 
 <ul>
    <li><a href="#Hints">Hints</a>
+   
+   <li><a href="#PreprocessingPlFanucFiles">Proprocessing plFanuc Files</a>
    
    <li><a href="#Download">Download Hole Position Files</a>
    
@@ -28,6 +30,8 @@
    <li><a href="#ShutdownCMM">Shut Down the CMM</a>
    
    <li><a href="#AnalyzeData">Analyze the Data</a>
+   
+   <li><a href="#UpdatingQuadrupoleCoefficients">Updating Quadruple Coefficients</a>
    
    <li><a href="#History">History</a>
 </ul>
@@ -53,6 +57,19 @@
         <li>Toggle the machine to DCC mode
     </ul>
 </ul>
+
+<h2><a name="PreprocessingPlFanucFiles">Proprocessing plFanuc Files</a></h2>
+
+<p>Sometime in early 2011 the drilling machine started introducing serious quadrupole error into the hole positions on the plug plates. This showed up as a distinctive pattern of errors in the graph displayed by FitPlugPlateMeas: a 4 lobed scalloped pattern with errors largely directed inward along one axis and outward along the perpendicular axis. After many attempts to improve calibration of the drilling machine we gave up and decided to take out the error programmatically instead. Here's how to do it:
+
+<ul>
+    <li>Download plFanucUnadjusted-xxxx.par drilling files.
+    <li>Drag and drop them onto the application AdjustFanucFiles
+    <li>This creates new adjusted files named plFanucAdjusted-xxxx.par in the same directory as the original, unadjusted files.
+    <li>Deliver the adjusted files to the shop so they can use them to drill plates.
+</ul>
+
+<p>Note: AdjustFanucFiles applies a quadrupole correction based on coefficients in the file ~/.adjustFanucFiles.dat. If plates start showing up with significant quadrupole error and a check shows that we are drilling the correct files (the plAdjusted-xxxx.par instead of plFanucUnadjusted-xxxx.par) then it is probably time to adjust those quadrupole coefficients. See <a href="#UpdatingQuadrupoleCoefficients">Updating Quadruple Coefficients</a> for instructions.
 
 <h2><a name="Download"></a>Download Position Files</h2>
 
@@ -301,7 +318,7 @@
     <li>Analyze the files by dropping them onto "FitPlugPlateMeas".
     
    <li>If any plate does not meet the following specifications, hold
-   onto it and talk to Larry, Russell or Mike about what to do:
+   onto it and talk to Nick, Russell or Mike about what to do:
    
    <ul>
       <li>Rad Resid RMS 0.009 mm or less.
@@ -310,9 +327,30 @@
    </ul>   
 </ul>
 
+<h2><a name="UpdatingQuadrupoleCoefficients">Updating Quadruple Coefficients</a></h2>
+
+<p>Occasionally the drilling machine may require new quadrupole coefficients for preprocessing the plFanuc drill files. Determine new coefficients as follows:
+
+<ul>
+    <li>Drill at least 5 plates using plUnadjusted-xxxx.par files. Note that these are the <b>unadjusted</b> files; they must <b>not</b> have been preprocessed with AdjustFanucFiles. Thus the resulting plates should not be observed.
+    <li>Measure all holes on those plates.
+    <li>Analyze these files using FitPlugPlateMeas. There will be a summary at the end of the table showing the best fit quadrupole coefficient for those plates and the associated hole position error.
+    <li>If the coefficients look OK (they match the individual quadrupole coefficients for each plate reasonably well and the error looks reasonable) then apply them as follows:
+    <ul>
+        <li>Open the Terminal application (select the Spotlight at the right of the menu bar and type Terminal or look in Applications/Utilities).
+        <li>Type: bbedit ~/.adjustFanucFiles.dat
+        <li>Update the coefficients in BBEdit and save the results.
+        <li>Test the new coefficients by reanalyzing the same measurements. The errors should be smaller, there should be no visible quadrupole on the graphs and the suggested quadrupole magnitude should be significantly smaller.
+    </ul>
+</ul>
+
+<p>If by some miracle the measurement errors on the plUnadjusted-xxxx.par files are acceptable and the graphs do not show significant quadruple then the problem with the drilling machine has been fixed and we can stop adjusting drill files before we use them. However, just to be on the safe side please set the quadrupole coefficients to zero in ~/.adjustFanucFiles.dat. That way if somebody does go ahead and adjust the files before drilling they will not have done any harm.
+
 <h2><a name="History"></a>History</h2>
 
 <ul>
+    <li>18: Added instructions for preprocessing plFancu files and for measuring quadrupole coefficients. Updated for Larry's retirement. R.O. 2011-03-23
+    
     <li>17: Updated instructions for new CMM and production code. R.O. 2010-06-24
     
 	<li>16: Updated instructions for sharing files with the CMM. R.O. 2007-06-01
