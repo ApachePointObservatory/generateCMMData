@@ -22,28 +22,26 @@ mod. to reject center hole. R.O. 11/16/00
                     Removed unused parameter maxHoles.
 2010-06-11 ROwen    Modified to use readPlDrillPosData.
 2010-06-15 ROwen    Modified to not use RO.procFiles.
+2011-10-07 ROwen    Removed run.
+                    Renamed runOneFile to generateAllHoles.
+                    Modified generateAllHoles to return GenSummary instead of printing messages.
 """
 import os.path
 import sys
 import re
-import readPlDrillPosData
+from . import readPlDrillPosData
+from . import genSummary
 
-Debug = False
-
-# debugFiles are processed automatically when run in debug mode
-debugFiles = ("plDrillPos-0825.par",)
+__all__ = ["generateAllHoles"]
 
 DOSTerm = "\r\n"
 
-def run(inFilePathList, outDir):
-    if not inFilePathList:
-        print "No files specified; nothing done"
-        return
-    for inFilePath in inFilePathList:
-        runOneFile(inFilePath, outDir)
-
-def runOneFile(inFilePath, outDir):
-#    print "run(inFilePath=%r, outDir=%r)" % (inFilePath, outDir)
+def generateAllHoles(inFilePath, outDir):
+    """Generate one CMM file with 37 well-spaced holes from a plPlugMap*.par file.
+    
+    Return a GenSummary object describing what was done.
+    """
+#    print "generateAllHoles(inFilePath=%r, outDir=%r)" % (inFilePath, outDir)
     nHolesWritten = 0
 
     inName = os.path.basename(inFilePath)
@@ -52,7 +50,7 @@ def runOneFile(inFilePath, outDir):
     try:
         platenum = int(re.split("[-.]", inName)[1])
     except:
-        raise RuntimeError, "cannot parse file name: %s" % (inName)
+        raise RuntimeError, "cannot parse file name: %s" % (inName,)
 
     dataList, nHolesRead = readPlDrillPosData.readPlDrillPosData(inFilePath)
     nHolesInRange = len(dataList)
@@ -61,14 +59,10 @@ def runOneFile(inFilePath, outDir):
     if nHolesInRange <= 0:
         raise RuntimeError("%d holes, but none are reachable" % (nHolesRead,))
 
-    # report # of holes found
-    print "%d holes found, %d are reachable" % (nHolesRead, nHolesInRange,)
-
     # create output file
     outName = "N" + str(platenum) + "A"
-    outDir = os.path.join(outDir, outName)
-    print "creating output file:", outName
-    with open(outDir, "wb") as outFile:
+    outPath = os.path.join(outDir, outName)
+    with open(outPath, "wb") as outFile:
         # write the header
         outFile.write ("#XYZ SC2" + DOSTerm)
         
@@ -77,11 +71,19 @@ def runOneFile(inFilePath, outDir):
             outFile.write ("%(x)11.5f %(y)11.5f  0.0 %(dia)8.5f" % (outDict))
             outFile.write (DOSTerm)
             nHolesWritten += 1
-    print "wrote file:", outName, "with", nHolesWritten, "holes"
+
+    return genSummary.GenSummary(
+        fromPath = inFilePath,
+        toPath = outPath,
+        nHolesRead = nHolesRead,
+        nHolesInRange = nHolesInRange,
+        nHolesWritten = nHolesWritten,
+    )
 
 
 if __name__ == "__main__":
-    if Debug:
+    debugFiles = ("plDrillPos-0825.par",)
+    if True:
         # debug version
         inFilePathList = debugFiles
     else:

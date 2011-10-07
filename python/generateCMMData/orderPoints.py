@@ -5,7 +5,7 @@ import anneal
 import testData
 import math
 
-import distributePoints
+from . import distributePoints
 
 class OrderPoints(object):
     """Place a set of points on a plane in an order in which they can be traversed quickly.

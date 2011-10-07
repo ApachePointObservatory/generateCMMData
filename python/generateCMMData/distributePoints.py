@@ -1,7 +1,7 @@
 import sys
 import random
 import numpy
-import anneal
+from . import anneal
 
 class DistributePoints(object):
     """Select a small set of points that are as evenly and widely distributed on a plane.

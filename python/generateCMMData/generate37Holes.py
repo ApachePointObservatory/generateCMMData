@@ -21,21 +21,20 @@ History
                     Modified to use simulated annealling to distribute the holes and order them (instead of
                     sectors). This gives more uniform coverage and perhaps a slight increase in in speed.
 2010-06-15 ROwen    Modified to not use RO.procFiles.
+2011-10-07 ROwen    Removed run.
+                    Renamed runOneFile to generateAllHoles.
+                    Modified generateAllHoles to return GenSummary instead of printing messages.
 """
-import math
 import os.path
 import sys
 import re
-import traceback
 import numpy
-import readPlDrillPosData
-import distributePoints
-import orderPoints
+from . import readPlDrillPosData
+from . import distributePoints
+from . import orderPoints
+from . import genSummary
 
-Debug = True
-
-# debugFiles are processed automatically when run in debug mode
-debugFiles = ("plDrillPos-0825.par",)
+__all__ = ["generate37Holes"]
 
 # number of holes to select
 NumHoles = 37
@@ -43,15 +42,12 @@ NumHoles = 37
 # constants
 DOSTerm = "\r\n"
 
-def run(inFilePathList, outDir):
-    if not inFilePathList:
-        print "No files specified; nothing done"
-        return
-    for inFilePath in inFilePathList:
-        runOneFile(inFilePath, outDir)
-
-def runOneFile(inFilePath, outDir):
-#   print "run(inFilePath=%r, outDir=%r)" % (inFilePath, outDir)
+def generate37Holes(inFilePath, outDir):
+    """Generate one CMM file with 37 well-spaced holes from a plPlugMap*.par file.
+    
+    Return a GenSummary object describing what was done.
+    """
+#   print "generate37Holes(inFilePath=%r, outDir=%r)" % (inFilePath, outDir)
     distribPointsObj = distributePoints.DistributePoints(numToSelect = NumHoles)
     orderPointsObj = orderPoints.OrderPoints()
 
@@ -72,9 +68,6 @@ def runOneFile(inFilePath, outDir):
     if nHolesInRange <= 0:
         raise RuntimeError("%d holes, but none are reachable" % (nHolesRead,))
 
-    # report # of holes found
-    print "%d holes found, %d are reachable" % (nHolesRead, nHolesInRange,)
-    
     dataArr = numpy.array(list((d["x"], d["y"], d["dia"]) for d in dataList), dtype=float)
     
     if len(dataArr) > NumHoles:
@@ -89,7 +82,6 @@ def runOneFile(inFilePath, outDir):
     # create output file (in same directory as input file)
     outName = "N" + str(platenum)
     outPath = os.path.join(outDir, outName)
-    print "creating output file:", outName
     with file(outPath, "wb") as outFile:
         # write the header
         outFile.write ("#XYZ SC2" + DOSTerm)
@@ -99,11 +91,18 @@ def runOneFile(inFilePath, outDir):
             outFile.write ("%11.5f %11.5f  0.0 %8.5f" % (pt[0], pt[1], pt[2]))
             outFile.write (DOSTerm)
             nHolesWritten += 1
-    print "wrote file:", outName, "with", nHolesWritten, "holes"
 
+    return genSummary.GenSummary(
+        fromPath = inFilePath,
+        toPath = outPath,
+        nHolesRead = nHolesRead,
+        nHolesInRange = nHolesInRange,
+        nHolesWritten = nHolesWritten,
+    )
 
 if __name__ == "__main__":
-    if Debug:
+    debugFiles = ("plDrillPos-0825.par",)
+    if True:
         # debug version
         inFilePathList = debugFiles
     else:
