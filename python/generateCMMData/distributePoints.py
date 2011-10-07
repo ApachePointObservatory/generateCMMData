@@ -2,7 +2,6 @@ import sys
 import random
 import numpy
 import anneal
-import testData
 
 class DistributePoints(object):
     """Select a small set of points that are as evenly and widely distributed on a plane.
@@ -81,6 +80,8 @@ class DistributePoints(object):
         
 
 if __name__ == "__main__":
+    from . import testData
+
     try:
         import matplotlib.pyplot as pyplot
     except ImportError:

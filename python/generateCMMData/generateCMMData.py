@@ -21,6 +21,7 @@ History
                     - Use RO.Wdg.DropletApp; output files are put in the same directory as input files.
 """
 import os.path
+import RO.Wdg
 import generate37Holes
 import generateAllHoles
 
@@ -53,13 +54,15 @@ class GenerateCMMDataWdg(RO.Wdg.DropletApp):
     def processFile(self, filePath):
         """Process one plDrillPos file.
         """
-        outDir = os.path.dirname(filePath)
+        outDir, fileName = os.path.split(filePath)
+        self.logWdg.addMsg("Processing %s" % (fileName,))
         generate37Holes.runOneFile(filePath, outDir)
         generateAllHoles.runOneFile(filePath, outDir)
     
 
 if __name__ == "__main__":
     import sys
+    import Tkinter
     filePathList = sys.argv[1:]
     # strip first argument if it starts with "-", as happens when run as a Mac application
     if filePathList and filePathList[0].startswith("-"):
