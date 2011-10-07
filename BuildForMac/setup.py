@@ -31,18 +31,18 @@ sys.path = pathList + sys.path
 import generateCMMData
 
 appName = "GenerateCMMData"
-mainScript = "generateCMMData.py"
-mainProg = os.path.join(pythonRoot, mainScript)
+mainScript = "runGenerateCMMData.py"
+mainProg = os.path.join(pkgRoot, "bin", mainScript)
 appPath = os.path.join("dist", appName + ".app")
 iconFile = "%s.icns" % appName
 versStr = generateCMMData.__version__
 
 inclModules = (
-    "FileDialog",
+#    "FileDialog",
 )
 # packages to include recursively
 inclPackages = (
-    "RO",
+#    "RO",
 )
 
 # see plistlib for more info

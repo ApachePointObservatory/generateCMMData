@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python
 """
 Generates CMM data (for the UW Brown and Sharp CMM running Avail) from SDSS "plDrillPos" files,
 as follows:
@@ -22,8 +22,8 @@ History
 """
 import os.path
 import RO.Wdg
-import generate37Holes
-import generateAllHoles
+import generateCMMData.generate37Holes
+import generateCMMData.generateAllHoles
 
 __version__ = "2.2"
 
@@ -56,8 +56,8 @@ class GenerateCMMDataWdg(RO.Wdg.DropletApp):
         """
         outDir, fileName = os.path.split(filePath)
         self.logWdg.addMsg("Processing %s" % (fileName,))
-        generate37Holes.runOneFile(filePath, outDir)
-        generateAllHoles.runOneFile(filePath, outDir)
+        generateCMMData.generate37Holes.runOneFile(filePath, outDir)
+        generateCMMData.generateAllHoles.runOneFile(filePath, outDir)
     
 
 if __name__ == "__main__":
