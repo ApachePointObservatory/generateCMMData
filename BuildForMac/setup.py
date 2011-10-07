@@ -38,11 +38,11 @@ iconFile = "%s.icns" % appName
 versStr = generateCMMData.__version__
 
 inclModules = (
-#    "FileDialog",
+    "FileDialog",
 )
 # packages to include recursively
 inclPackages = (
-#    "RO",
+    "RO",
 )
 
 # see plistlib for more info
