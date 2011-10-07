@@ -18,8 +18,8 @@ class GenerateCMMDataWdg(RO.Wdg.DropletApp):
         """
         RO.Wdg.DropletApp.__init__(self,
             master = master,
-            width = 135,
-            height = 20,
+            width = 65,
+            height = 40,
             recursionDepth = 1,
             patterns = "plDrillPos*.par",
             exclDirPatterns = ".*",
