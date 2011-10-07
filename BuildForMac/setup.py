@@ -38,9 +38,11 @@ iconFile = "%s.icns" % appName
 versStr = generateCMMData.__version__
 
 inclModules = (
+#    "FileDialog",
 )
 # packages to include recursively
 inclPackages = (
+#    "RO",
 )
 
 # see plistlib for more info
@@ -67,6 +69,7 @@ plist = dict(
             ],
         ),
     ],
+    LSPrefersPPC                = False,
 )
 
 setup(
@@ -80,11 +83,6 @@ setup(
             packages = inclPackages,
         )
     ),
-)
-
-shutil.copy(
-    os.path.join(pythonRoot, mainScript),
-    os.path.join(appPath, "Contents", "Resources"),
 )
 
 print "*** Creating disk image ***"
