@@ -7,6 +7,7 @@ Usage:
 History:
 2010-06-14 ROwen
 2010-06-24 ROwen    Modified for new package layout.
+2011-10-07 ROwen    Adjusted for version 2.2.
 """
 import os
 import shutil
@@ -14,12 +15,12 @@ import subprocess
 import sys
 from setuptools import setup
 
-# add various bits to the path
+# add various bits to the path (but preferably use eups instead)
 pkgRoot = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 pythonRoot = os.path.join(pkgRoot, "python", "generateCMMData")
+pathList = [pythonRoot]
 if os.path.isfile("extraPaths.txt"):
     with file("extraPaths.txt") as pathFile:
-        pathList = [pythonRoot]
         for pathStr in pathFile:
             pathStr = pathStr.strip()
             if not pathStr or pathStr.startswith("#"):
@@ -27,20 +28,19 @@ if os.path.isfile("extraPaths.txt"):
             pathList.append(pathStr)
 sys.path = pathList + sys.path
 
-import GenerateCMMData
+import generateCMMData
 
 appName = "GenerateCMMData"
-mainScript = "GenerateCMMData.py"
-mainProg = os.path.join(pythonRoot, "runGenerateCMMData.py")
+mainScript = "generateCMMData.py"
+mainProg = os.path.join(pythonRoot, mainScript)
 appPath = os.path.join("dist", appName + ".app")
 iconFile = "%s.icns" % appName
-versStr = GenerateCMMData.__version__
+versStr = generateCMMData.__version__
 
 inclModules = (
 )
 # packages to include recursively
 inclPackages = (
-#    "RO",
 )
 
 # see plistlib for more info
@@ -51,13 +51,19 @@ plist = dict(
     CFBundleGetInfoString       = "%s %s" % (appName, versStr),
     CFBundleDocumentTypes       = [
         dict(
-            CFBundleTypeName = "TEXT",
-            CFBundleTypeRole = "Viewer",
+            CFBundleTypeName = "File",
+            CFBundleTypeRole = "Editor",
             LSItemContentTypes = [
                 "public.plain-text",
                 "public.text",
                 "public.data",
-                "com.apple.application-bundle",
+            ],
+        ),
+        dict(
+            CFBundleTypeName = "Folder",
+            CFBundleTypeRole = "Viewer",
+            LSItemContentTypes = [
+				"public.folder",
             ],
         ),
     ],
