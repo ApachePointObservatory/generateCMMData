@@ -8,6 +8,7 @@ History:
 2010-06-14 ROwen
 2010-06-24 ROwen    Modified for new package layout.
 2011-10-07 ROwen    Adjusted for version 2.2.
+2011-10-11 ROwen    Deleted unused inclModules and inclPackages.
 """
 import os
 import shutil
@@ -36,14 +37,6 @@ mainProg = os.path.join(pkgRoot, "bin", mainScript)
 appPath = os.path.join("dist", appName + ".app")
 iconFile = "%s.icns" % appName
 versStr = generateCMMData.__version__
-
-inclModules = (
-#    "FileDialog",
-)
-# packages to include recursively
-inclPackages = (
-#    "RO",
-)
 
 # see plistlib for more info
 plist = dict(
@@ -79,8 +72,6 @@ setup(
         py2app = dict (
             plist = plist,
             iconfile = iconFile,
-            includes = inclModules,
-            packages = inclPackages,
         )
     ),
 )
