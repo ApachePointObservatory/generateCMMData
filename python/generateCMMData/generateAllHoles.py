@@ -37,7 +37,7 @@ __all__ = ["generateAllHoles"]
 DOSTerm = "\r\n"
 
 def generateAllHoles(inFilePath, outDir):
-    """Generate one CMM file with 37 well-spaced holes from a plPlugMap*.par file.
+    """Generate one CMM file with all reachable holes from a plPlugMap*.par file.
     
     Return a GenSummary object describing what was done.
     """

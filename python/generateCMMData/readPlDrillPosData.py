@@ -31,7 +31,7 @@ def readPlDrillPosData(inFilePath):
     - inFilePath: path to file containing hole position data
     
     Return:
-    - dataList: sequence of dictionaries with keys: x, y, dia, name
+    - dataList: sequence of dictionaries with keys: x, y, dia, name; only includes holes that are in bounds
     - nHolesRead: number of holes read (some of which may have been rejected as out of bounds)
     """
     nHolesRead = 0
