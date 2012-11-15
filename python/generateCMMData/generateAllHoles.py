@@ -25,12 +25,16 @@ mod. to reject center hole. R.O. 11/16/00
 2011-10-07 ROwen    Removed run.
                     Renamed runOneFile to generateAllHoles.
                     Modified generateAllHoles to return GenSummary instead of printing messages.
+2012-11-14 CCS      Now optimizing measurement order.
 """
 import os.path
 import sys
 import re
+import numpy
+import time
 from . import readPlDrillPosData
 from . import genSummary
+from . import orderPoints
 
 __all__ = ["generateAllHoles"]
 
@@ -58,6 +62,12 @@ def generateAllHoles(inFilePath, outDir):
     # if no data found, complain and quit
     if nHolesInRange <= 0:
         raise RuntimeError("%d holes, but none are reachable" % (nHolesRead,))
+        
+    # order the points in a way that is efficient to measure
+    dataArr = numpy.array(list((d["x"], d["y"], d["dia"]) for d in dataList), dtype=float)
+    # takes ~ 2 mins on my machine
+    orderPointsObj = orderPoints.OrderPoints(nIter=1.5e6)
+    orderedArr = orderPointsObj(dataArr)        
 
     # create output file
     outName = "N" + str(platenum) + "A"
@@ -65,10 +75,10 @@ def generateAllHoles(inFilePath, outDir):
     with open(outPath, "wb") as outFile:
         # write the header
         outFile.write ("#XYZ SC2" + DOSTerm)
-        
-        # write holes
-        for outDict in dataList:
-            outFile.write ("%(x)11.5f %(y)11.5f  0.0 %(dia)8.5f" % (outDict))
+
+        # write the data
+        for pt in orderedArr:
+            outFile.write ("%11.5f %11.5f  0.0 %8.5f" % (pt[0], pt[1], pt[2]))
             outFile.write (DOSTerm)
             nHolesWritten += 1
 

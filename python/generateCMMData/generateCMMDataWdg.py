@@ -1,4 +1,6 @@
 import os.path
+import RO.Comm.Generic
+RO.Comm.Generic.setFramework("tk")
 import RO.Wdg
 from .generate37Holes import generate37Holes
 from . import generateAllHoles
