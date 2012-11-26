@@ -7,6 +7,7 @@ History
 2010-06-24 ROwen    Modified to handle modern par files with zDrill (and older files without).
 2012-01-03 ROwen    Modified to handle very old par files without xDrill, yDrill.
 2012-11-14 CCS      Modified to recognize MaNGA holes
+2012-11-26 CCS      Modified CMM measurement y range from 315mm to 322.5mm
 """
 from __future__ import with_statement
 import math
@@ -20,7 +21,7 @@ debugFiles = ("plDrillPos-0825.par",)
 # maximum |x|, |y| for the CMM, in mm
 # the CMM full range is 650 x 1000 mm
 # and we need a bit of margin to make the measurement (I'm using 10 mm)
-xMax, yMax = 490.0, 315.0
+xMax, yMax = 490.0, 322.5
 holenames = ("OBJECT", "GUIDE", "QUALITY", "MANGA")  # holes to use
 
 # search expression for valid data
