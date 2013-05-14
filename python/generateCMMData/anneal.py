@@ -132,7 +132,6 @@ class Annealer:
         
         # Attempt moves to new states
         while step < steps:
-            print step
             step += 1
             T = Tmax * math.exp( Tfactor * step / steps )
             self.move(state)
@@ -207,8 +206,6 @@ class Annealer:
             self.move(state)
             T = abs( self.energy(state) - E )
         
-        print 'Exploring temperature landscape:'
-        print ' Temperature        Energy    Accept   Improve     Elapsed'
         def update(T, E, acceptance, improvement):
             """Prints the current temperature, energy, acceptance rate,
             improvement rate, and elapsed time."""
