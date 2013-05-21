@@ -1,4 +1,3 @@
-import sys
 import random
 import numpy
 from . import anneal
@@ -13,7 +12,7 @@ class DistributePoints(object):
     Credits:
     Thanks to Richard J. Wagner for the simulated annealing code
     """
-    def __init__(self, numToSelect=37, nIter=1000, minTemp=1.0e-6, nToPrint=0):
+    def __init__(self, numToSelect=37, nIter=5000, minTemp=1.0e-6, nToPrint=0):
         """Construct a DistributePoints
         
         Inputs
@@ -36,24 +35,37 @@ class DistributePoints(object):
                 pt1IndexList.append(j)
         self.pt0IndexArr = numpy.array(pt0IndexList, dtype=int)
         self.pt1IndexArr = numpy.array(pt1IndexList, dtype=int)
+        self.energyMatrix = None # cached energy of each point compared to each other (0 for self)
 
-    def computeEnergy(self, xyPoints):
-        """Compute the energy of a set of points
+    def computeEnergy(self, xyPoints=None):
+        """Compute the energy of a set of points * 1000
+        
+        The xyPoints argument is ignored, so be sure to update self.energyMatrix in self.changeState.
         
         Note: uses only the first self.numToSelect points
         """
-        return 1000 * numpy.sum(1.0 / numpy.sum(numpy.square(
-            xyPoints[self.pt0IndexArr, 0:2] - xyPoints[self.pt1IndexArr, 0:2]
-        ), 1))
+        return 1000 * numpy.sum(self.energyMatrix)
+    
+    def setEnergyForOnePoint(self, xyPoints, ind):
+        """Set self.energyMatrix for one point
+        """
+        xy0 = xyPoints[ind]
+        radSq = numpy.sum(numpy.square(xyPoints[0:self.numToSelect] - xyPoints[ind]), 1)
+        radSq[ind] = numpy.inf
+        energyArr = 1 / radSq
+        self.energyMatrix[ind,:] = energyArr
+        self.energyMatrix[:,ind] = energyArr
         
     def changeState(self, xyPoints):
-        """Change the state of xyPoints in place.
+        """Change the state of xyPoints in place and update self.energyMatrix
         
         Randomly swap two points, one in range 0:self.numToSelect, the other past that
         """
+        numPoints = len(xyPoints)
         selInd = random.randint(0, self.numToSelect-1)
         remInd = random.randint(self.numToSelect, len(xyPoints) - 1)
-        xyPoints[selInd], xyPoints[remInd] = xyPoints[remInd], xyPoints[selInd]
+        xyPoints[selInd], xyPoints[remInd] = tuple(xyPoints[remInd]), tuple(xyPoints[selInd])
+        self.setEnergyForOnePoint(xyPoints, selInd)
 
     def __call__(self, xyPoints, doTrim=True):
         """Select self.numToSelect points from self.xyPoints distributed as far apart as possible.
@@ -64,11 +76,14 @@ class DistributePoints(object):
         """
         numPoints = len(xyPoints)
         if numPoints <= self.numToSelect:
-            raise RuntimeError("number of points = %s <= %s = numToSelect" % \
-                (numPoints, self.numToSelect))
+            raise RuntimeError("number of points = %s <= %s = numToSelect" % (numPoints, self.numToSelect))
         initialXYPoints = numpy.array(xyPoints, dtype=float, copy=True)
-
         numpy.random.shuffle(initialXYPoints)
+        
+        self.energyMatrix = numpy.zeros(shape=(self.numToSelect, self.numToSelect))
+        for i in range(self.numToSelect):
+            self.setEnergyForOnePoint(initialXYPoints, i)
+
         initialEnergy = self.computeEnergy(initialXYPoints)
         
         annealer = anneal.Annealer(self.computeEnergy, self.changeState)
@@ -77,22 +92,3 @@ class DistributePoints(object):
             return xyPoints[0:self.numToSelect]
         else:
             return xyPoints
-        
-
-if __name__ == "__main__":
-    from . import testData
-
-    try:
-        import matplotlib.pyplot as pyplot
-    except ImportError:
-        pyplot = None
-        print "Cannot find matplotlib.pyplot so no plot will be shown"
-
-    testPoints = testData.getAllPoints()
-    dp = DistributePoints()
-    state = dp(testPoints, doTrim=False)
-    print "final energy=", dp.computeEnergy(state)
-    if pyplot:
-        pyplot.plot(state[dp.numToSelect:,0], state[dp.numToSelect:,1], 'bo')
-        pyplot.plot(state[:dp.numToSelect,0], state[:dp.numToSelect,1], 'ro')
-        pyplot.show()

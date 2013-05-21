@@ -1,9 +1,8 @@
 #!/usr/bin/env python
-from __future__ import with_statement
 """
 Generate data for the UW Brown and Sharp CMM from SDSS "plDrillPos" files.
 
-Choose NumHoles holes in a well distributed pattern.
+Choose NumHoles holes in a well distributed pattern and order them for efficient measuring.
 
 History
 2001-10-26 ROwen    First version with history
@@ -24,15 +23,16 @@ History
 2011-10-07 ROwen    Removed run.
                     Renamed runOneFile to generateAllHoles.
                     Modified generateAllHoles to return GenSummary instead of printing messages.
+2013-05-21 ROwen    Reduced the number of ordering iterations to speed up the program.
+                    Moved command-line portion to examples.
 """
 import os.path
-import sys
 import re
 import numpy
 from . import readPlDrillPosData
-from . import distributePoints
-from . import orderPoints
 from . import genSummary
+from . import orderPoints
+from . import distributePoints
 
 __all__ = ["generate37Holes"]
 
@@ -48,9 +48,6 @@ def generate37Holes(inFilePath, outDir):
     Return a GenSummary object describing what was done.
     """
 #   print "generate37Holes(inFilePath=%r, outDir=%r)" % (inFilePath, outDir)
-    distribPointsObj = distributePoints.DistributePoints(numToSelect = NumHoles)
-    orderPointsObj = orderPoints.OrderPoints()
-
     nHolesWritten = 0
 
     inName = os.path.basename(inFilePath)
@@ -72,14 +69,16 @@ def generate37Holes(inFilePath, outDir):
     
     if len(dataArr) > NumHoles:
         # Select 37 points that are well distributed across the whole set
+        distribPointsObj = distributePoints.DistributePoints(numToSelect = NumHoles)
         distribArr = distribPointsObj(dataArr)
     else:
         distribArr = dataArr
 
     # order the points in a way that is efficient to measure
+    orderPointsObj = orderPoints.OrderPoints(nIter=10000)
     orderedArr = orderPointsObj(distribArr)
-    
-    # create output file (in same directory as input file)
+
+    # create output file
     outName = "N" + str(platenum)
     outPath = os.path.join(outDir, outName)
     with file(outPath, "wb") as outFile:
@@ -99,12 +98,3 @@ def generate37Holes(inFilePath, outDir):
         nHolesInRange = nHolesInRange,
         nHolesWritten = nHolesWritten,
     )
-
-if __name__ == "__main__":
-    debugFiles = ("plDrillPos-0825.par",)
-    if True:
-        # debug version
-        inFilePathList = debugFiles
-    else:
-        inFilePathList = sys.argv[1:]
-    run(inFilePathList, ".")

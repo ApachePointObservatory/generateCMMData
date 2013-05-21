@@ -1,11 +1,8 @@
-import sys
-import random
-import numpy
-import anneal
-import testData
 import math
+import numpy
+import random
 
-from . import distributePoints
+from . import anneal
 
 class OrderPoints(object):
     """Place a set of points on a plane in an order in which they can be traversed quickly.
@@ -37,7 +34,13 @@ class OrderPoints(object):
     def computeEnergy(self, xyPoints):
         """Compute the energy of a set of points
         """
-        return numpy.sum(numpy.sqrt(numpy.sum(numpy.square(xyPoints[:-1, 0:2] - xyPoints[1:, 0:2]), 1)))
+        # cost = max(dx, dy); this is the best match for a machine such as the CMM
+        # (assuming the x and y axes have the same velocity limit)
+        return numpy.sum(numpy.sqrt(numpy.max(numpy.abs(xyPoints[:-1, 0:2] - xyPoints[1:, 0:2]), 1)))
+
+        # cost = Euclidean distance; this works well enough for a machine,
+        # but over-estimates the time required for a diagonal move
+#        return numpy.sum(numpy.sqrt(numpy.sum(numpy.square(xyPoints[:-1, 0:2] - xyPoints[1:, 0:2]), 1)))
         
     def changeState(self, xyPoints):
         """Change the state of xyPoints in place.
@@ -49,6 +52,7 @@ class OrderPoints(object):
         ind1 = random.randint(1, nPts-1)
         while ind1 == ind0:
             ind1 = random.randint(1, nPts-1)
+        # make copy of the sources to make sure the swap works correctly
         xyPoints[ind0], xyPoints[ind1] = tuple(xyPoints[ind1]), tuple(xyPoints[ind0])
 
     def __call__(self, xyPoints):
@@ -69,21 +73,3 @@ class OrderPoints(object):
         annealer = anneal.Annealer(self.computeEnergy, self.changeState)
         xyPoints = annealer.anneal(initialXYPoints, initialEnergy, self.minTemp, self.nIter, self.nToPrint)[0]
         return xyPoints
-        
-
-if __name__ == "__main__":
-    try:
-        import matplotlib.pyplot as pyplot
-    except ImportError:
-        pyplot = None
-        print "Cannot find matplotlib.pyplot so no plot will be shown"
-
-    testPoints = testData.getAllPoints()
-    dp = distributePoints.DistributePoints()
-    selPoints = dp(testPoints)
-
-    op = OrderPoints(nToPrint=10)
-    orderedPoints = op(selPoints)
-    if pyplot:
-        pyplot.plot(orderedPoints[:,0], orderedPoints[:,1])
-        pyplot.show()

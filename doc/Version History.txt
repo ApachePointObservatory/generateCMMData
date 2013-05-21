@@ -1,0 +1,6 @@
+2.4.0 2013-05-21
+- Reduced number of iterations to speed up file generation.
+- The distance computation for ordering points is now based on max(dx, dy), instead of Euclidean distance.
+  This is a better approximation of the true cost, though in practice it is unlikely to matter much.
+- Moved most example code to the examples directory (much of it was broken due to the use of relative imports).
+  

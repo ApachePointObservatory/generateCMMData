@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 from __future__ import with_statement
 """
-Generates data for the UW Brown and Sharp CMM from SDSS "plDrillPos" files.
+Generate data for the UW Brown and Sharp CMM from SDSS "plDrillPos" files.
 
-The holes are output in the same order in which they are read, since they are already
-in an order that makes for efficient drilling.
+Choose all reachable holes and order them for efficient measuring.
 
 History
-mod. to reject center hole. R.O. 11/16/00
+2000-11-18 ROwen    Mod. to reject center hole.
 2001-10-26 ROwen    Mod. to use procFiles 2, xreadlines and random instead of whrandom.
 2001-11-28 ROwen    Oncreased xMax from 300 to 390, yMax from 200 to 290
                     due to the accurate the new plug plate holding fixture.
@@ -26,12 +25,13 @@ mod. to reject center hole. R.O. 11/16/00
                     Renamed runOneFile to generateAllHoles.
                     Modified generateAllHoles to return GenSummary instead of printing messages.
 2012-11-14 CCS      Now optimizing measurement order.
+2013-05-21 ROwen    Reduced the number of ordering iterations to speed up the program.
+                    Minor cleanups to make it work as a command-line script.
+                    Moved command-line portion to examples.
 """
 import os.path
-import sys
 import re
 import numpy
-import time
 from . import readPlDrillPosData
 from . import genSummary
 from . import orderPoints
@@ -62,17 +62,17 @@ def generateAllHoles(inFilePath, outDir):
     # if no data found, complain and quit
     if nHolesInRange <= 0:
         raise RuntimeError("%d holes, but none are reachable" % (nHolesRead,))
+
+    dataArr = numpy.array(list((d["x"], d["y"], d["dia"]) for d in dataList), dtype=float)
         
     # order the points in a way that is efficient to measure
-    dataArr = numpy.array(list((d["x"], d["y"], d["dia"]) for d in dataList), dtype=float)
-    # takes ~ 2 mins on my machine
-    orderPointsObj = orderPoints.OrderPoints(nIter=1.5e6)
+    orderPointsObj = orderPoints.OrderPoints(nIter=50000)
     orderedArr = orderPointsObj(dataArr)        
 
     # create output file
     outName = "N" + str(platenum) + "A"
     outPath = os.path.join(outDir, outName)
-    with open(outPath, "wb") as outFile:
+    with file(outPath, "wb") as outFile:
         # write the header
         outFile.write ("#XYZ SC2" + DOSTerm)
 
@@ -89,13 +89,3 @@ def generateAllHoles(inFilePath, outDir):
         nHolesInRange = nHolesInRange,
         nHolesWritten = nHolesWritten,
     )
-
-
-if __name__ == "__main__":
-    debugFiles = ("plDrillPos-0825.par",)
-    if True:
-        # debug version
-        inFilePathList = debugFiles
-    else:
-        inFilePathList = sys.argv[1:]
-    run(inFilePathList, ".")
