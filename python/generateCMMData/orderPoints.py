@@ -69,7 +69,7 @@ class OrderPoints(object):
         if minInd != 0:
             initialXYPoints[0], initialXYPoints[minInd] = tuple(initialXYPoints[minInd]), tuple(initialXYPoints[0])
         initialEnergy = self.computeEnergy(initialXYPoints)
-        
         annealer = anneal.Annealer(self.computeEnergy, self.changeState)
         xyPoints = annealer.anneal(initialXYPoints, initialEnergy, self.minTemp, self.nIter, self.nToPrint)[0]
         return xyPoints
+

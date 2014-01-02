@@ -25,6 +25,8 @@ History
                     Modified generateAllHoles to return GenSummary instead of printing messages.
 2013-05-21 ROwen    Reduced the number of ordering iterations to speed up the program.
                     Moved command-line portion to examples.
+2014-01-02 CS       Forced all Manga and Guide holes to be measured. If other holes remain, 
+                    37 are randomly measured
 """
 import os.path
 import re
@@ -60,19 +62,41 @@ def generate37Holes(inFilePath, outDir):
 
     dataList, nHolesRead = readPlDrillPosData.readPlDrillPosData(inFilePath)
     nHolesInRange = len(dataList)
-    
+
     # if no data found, complain and quit
     if nHolesInRange <= 0:
         raise RuntimeError("%d holes, but none are reachable" % (nHolesRead,))
 
-    dataArr = numpy.array(list((d["x"], d["y"], d["dia"]) for d in dataList), dtype=float)
-    
-    if len(dataArr) > NumHoles:
+    # extract all essential holes for measurment (MANGA and GUIDE).  These will
+    # be measured in addition to a randomly selected subset of 37 holes not of type MANGA nor GUIDE.
+    measAllList = []
+    measSubsetList = []
+    for hole in dataList:
+        if hole["name"] in ("MANGA", "GUIDE"):
+            measAllList.append(hole)
+        else:
+            measSubsetList.append(hole)
+
+
+    # select a subset of points to measure from the subset list (no MANGA nor GUIDE holes)
+    dataArrSub = numpy.array(list((d["x"], d["y"], d["dia"]) for d in measSubsetList), dtype=float)
+    # select all holes for manga and guide
+    dataArrAll = numpy.array(list((d["x"], d["y"], d["dia"]) for d in measAllList), dtype=float)
+    # dataArrAll must never be empty (every plate has guide holes)...
+    if len(dataArrAll) == 0:
+        raise RuntimeError("No Guide Holes Found")
+    if len(dataArrSub) == 0:
+        # this plate contains only manga and guide holes
+        distribArr = dataArrAll
+    elif len(dataArrSub) > NumHoles:
         # Select 37 points that are well distributed across the whole set
         distribPointsObj = distributePoints.DistributePoints(numToSelect = NumHoles)
-        distribArr = distribPointsObj(dataArr)
+        # Concatenate array containing the 37 chosen holes with the manga and guide holes
+        distPoints = distribPointsObj(dataArrSub)
+        distribArr = numpy.vstack((distPoints, dataArrAll))
     else:
-        distribArr = dataArr
+        # concatenate non-manga/guide holes with manga/guide holes
+        distribArr = numpy.vstack((dataArrSub, dataArrAll))
 
     # order the points in a way that is efficient to measure
     orderPointsObj = orderPoints.OrderPoints(nIter=10000)

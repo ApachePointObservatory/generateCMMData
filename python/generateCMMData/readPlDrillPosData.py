@@ -70,6 +70,9 @@ def readPlDrillPosData(inFilePath):
     
                     # append data to list
                     dataList.append(dataDict)
+                elif dataDict["name"] in ("GUIDE", "MANGA"):
+                    # A manga or guide hole is out of cmm range.
+                    raise RuntimeError("Essential hole out of measurement range.")
 
     if len(dataList) == 0:
         raise RuntimeError("No valid data found in %r: " % (inFilePath,))
