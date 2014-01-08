@@ -4,3 +4,5 @@
   This is a better approximation of the true cost, though in practice it is unlikely to matter much.
 - Moved most example code to the examples directory (much of it was broken due to the use of relative imports).
   
+2.5.0 2014-05-07
+- Every MANGA and GUIDE hole are measured on a plate. If any holes remain, 37 of those are additionally chosen for measurement.
