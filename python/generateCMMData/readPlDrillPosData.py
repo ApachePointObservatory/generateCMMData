@@ -8,6 +8,7 @@ History
 2012-01-03 ROwen    Modified to handle very old par files without xDrill, yDrill.
 2012-11-14 CCS      Modified to recognize MaNGA holes
 2012-11-26 CCS      Modified CMM measurement y range from 315mm to 322.5mm
+2014-01-16 CCS      Now recognizes "MANGA_SINGLE" holes.
 """
 from __future__ import with_statement
 import math
@@ -22,7 +23,7 @@ debugFiles = ("plDrillPos-0825.par",)
 # the CMM full range is 650 x 1000 mm
 # and we need a bit of margin to make the measurement (I'm using 10 mm)
 xMax, yMax = 490.0, 322.5
-holenames = ("OBJECT", "GUIDE", "QUALITY", "MANGA")  # holes to use
+holenames = ("OBJECT", "GUIDE", "QUALITY", "MANGA", "MANGA_SINGLE")  # holes to use
 
 # search expression for valid data
 dataRegEx = re.compile(r'^drillpos +(?P<name>\w+) +\{.+\}( +[0-9e+-.]+){4} +(?P<x>[0-9e+-.]+) +(?P<y>[0-9e+-.]+)( +[0-9e+-.]+){0,3} +(?P<dia>[0-9e+-.]+)$', re.IGNORECASE)
