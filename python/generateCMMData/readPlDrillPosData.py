@@ -30,10 +30,10 @@ dataRegEx = re.compile(r'^drillpos +(?P<name>\w+) +\{.+\}( +[0-9e+-.]+){4} +(?P<
 
 def readPlDrillPosData(inFilePath):
     """Read data from a plDrillPos file
-    
+
     Inputs:
     - inFilePath: path to file containing hole position data
-    
+
     Return:
     - dataList: sequence of dictionaries with keys: x, y, dia, name; only includes holes that are in bounds
     - nHolesRead: number of holes read (some of which may have been rejected as out of bounds)
@@ -47,7 +47,7 @@ def readPlDrillPosData(inFilePath):
             # skip blank lines
             if line == "\n":
                 continue
-    
+
             # try to parse data
             # sys.stderr.write ("parsing data :%s:\n" % line) # for debugging
             dataMatched = dataRegEx.search(line)
@@ -64,16 +64,18 @@ def readPlDrillPosData(inFilePath):
                     dataDict[key] = float(dataDict[key])
                 if dataDict["name"] in holenames and abs(dataDict["x"]) <= xMax and abs(dataDict["y"]) <= yMax:
                     # data is for a hole of interest and that is in range
-    
+
                     radSq = dataDict["x"]**2 + dataDict["y"]**2
                     if radSq < 0.001:
                         continue # skip center hole
-    
+
                     # append data to list
                     dataList.append(dataDict)
                 elif dataDict["name"] in ("GUIDE", "MANGA"):
                     # A manga or guide hole is out of cmm range.
-                    raise RuntimeError("Essential hole out of measurement range.")
+                    print >> sys.stderr, "Essential hole reported out of range, but written anyways", dataDict
+                    dataList.append(dataDict)
+                    # raise RuntimeError("Essential hole out of measurement range.")
 
     if len(dataList) == 0:
         raise RuntimeError("No valid data found in %r: " % (inFilePath,))
