@@ -25,8 +25,9 @@ History
                     Modified generateAllHoles to return GenSummary instead of printing messages.
 2013-05-21 ROwen    Reduced the number of ordering iterations to speed up the program.
                     Moved command-line portion to examples.
-2014-01-02 CS       Forced all Manga and Guide holes to be measured. If other holes remain, 
+2014-01-02 CS       Forced all Manga and Guide holes to be measured. If other holes remain,
                     37 are randomly measured
+2014-01-13 CS       Adjust to allow use of focal vs flat positions
 """
 import os.path
 import re
@@ -44,12 +45,18 @@ NumHoles = 37
 # constants
 DOSTerm = "\r\n"
 
-def generate37Holes(inFilePath, outDir):
+def generate37Holes(inFilePath, outDir, useFlat=True):
     """Generate one CMM file with 37 well-spaced holes from a plPlugMap*.par file.
-    
+
     Return a GenSummary object describing what was done.
     """
 #   print "generate37Holes(inFilePath=%r, outDir=%r)" % (inFilePath, outDir)
+    if useFlat:
+        xType = "xFlat"
+        yType = "yFlat"
+    else:
+        xType = "xFocal"
+        yType = "yFocal"
     nHolesWritten = 0
 
     inName = os.path.basename(inFilePath)
@@ -60,7 +67,7 @@ def generate37Holes(inFilePath, outDir):
     except:
         raise RuntimeError, "cannot parse file name: %s" % (inName,)
 
-    dataList, nHolesRead = readPlDrillPosData.readPlDrillPosData(inFilePath)
+    dataList, nHolesRead = readPlDrillPosData.readPlDrillPosData(inFilePath, useFlat=useFlat)
     nHolesInRange = len(dataList)
 
     # if no data found, complain and quit
@@ -79,9 +86,9 @@ def generate37Holes(inFilePath, outDir):
 
 
     # select a subset of points to measure from the subset list (no MANGA nor GUIDE holes)
-    dataArrSub = numpy.array(list((d["x"], d["y"], d["dia"]) for d in measSubsetList), dtype=float)
+    dataArrSub = numpy.array(list((d[xType], d[yType], d["dia"]) for d in measSubsetList), dtype=float)
     # select all holes for manga and guide
-    dataArrAll = numpy.array(list((d["x"], d["y"], d["dia"]) for d in measAllList), dtype=float)
+    dataArrAll = numpy.array(list((d[xType], d[yType], d["dia"]) for d in measAllList), dtype=float)
     # dataArrAll must never be empty (every plate has guide holes)...
     if len(dataArrAll) == 0:
         raise RuntimeError("No Guide Holes Found")

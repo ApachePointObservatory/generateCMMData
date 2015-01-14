@@ -28,6 +28,7 @@ History
 2013-05-21 ROwen    Reduced the number of ordering iterations to speed up the program.
                     Minor cleanups to make it work as a command-line script.
                     Moved command-line portion to examples.
+2014-01-13 CS       Adjust to allow use of focal vs flat positions
 """
 import os.path
 import re
@@ -40,12 +41,18 @@ __all__ = ["generateAllHoles"]
 
 DOSTerm = "\r\n"
 
-def generateAllHoles(inFilePath, outDir):
+def generateAllHoles(inFilePath, outDir, useFlat=True):
     """Generate one CMM file with all reachable holes from a plPlugMap*.par file.
-    
+
     Return a GenSummary object describing what was done.
     """
 #    print "generateAllHoles(inFilePath=%r, outDir=%r)" % (inFilePath, outDir)
+    if useFlat:
+        xType = "xFlat"
+        yType = "yFlat"
+    else:
+        xType = "xFocal"
+        yType = "yFocal"
     nHolesWritten = 0
 
     inName = os.path.basename(inFilePath)
@@ -56,18 +63,18 @@ def generateAllHoles(inFilePath, outDir):
     except:
         raise RuntimeError, "cannot parse file name: %s" % (inName,)
 
-    dataList, nHolesRead = readPlDrillPosData.readPlDrillPosData(inFilePath)
+    dataList, nHolesRead = readPlDrillPosData.readPlDrillPosData(inFilePath, useFlat=useFlat)
     nHolesInRange = len(dataList)
-    
+
     # if no data found, complain and quit
     if nHolesInRange <= 0:
         raise RuntimeError("%d holes, but none are reachable" % (nHolesRead,))
 
-    dataArr = numpy.array(list((d["x"], d["y"], d["dia"]) for d in dataList), dtype=float)
-        
+    dataArr = numpy.array(list((d[xType], d[yType], d["dia"]) for d in dataList), dtype=float)
+
     # order the points in a way that is efficient to measure
     orderPointsObj = orderPoints.OrderPoints(nIter=50000)
-    orderedArr = orderPointsObj(dataArr)        
+    orderedArr = orderPointsObj(dataArr)
 
     # create output file
     outName = "N" + str(platenum) + "A"

@@ -9,9 +9,9 @@ History
 2012-11-14 CCS      Modified to recognize MaNGA holes
 2012-11-26 CCS      Modified CMM measurement y range from 315mm to 322.5mm
 2014-01-16 CCS      Now recognizes "MANGA_SINGLE" holes.
+2015-01-13 CCS      Add flag for using x,y Focal vs Flat positions (anticipation of APOGEE-South)
 """
 from __future__ import with_statement
-import math
 import sys
 import re
 
@@ -26,13 +26,14 @@ xMax, yMax = 490.0, 322.5
 holenames = ("OBJECT", "GUIDE", "QUALITY", "MANGA", "MANGA_SINGLE")  # holes to use
 
 # search expression for valid data
-dataRegEx = re.compile(r'^drillpos +(?P<name>\w+) +\{.+\}( +[0-9e+-.]+){4} +(?P<x>[0-9e+-.]+) +(?P<y>[0-9e+-.]+)( +[0-9e+-.]+){0,3} +(?P<dia>[0-9e+-.]+)$', re.IGNORECASE)
+dataRegEx = re.compile(r'^drillpos +(?P<name>\w+) +\{.+\}( +[0-9e+-.]+){2} +(?P<xFocal>[0-9e+-.]+) +(?P<yFocal>[0-9e+-.]+) +(?P<xFlat>[0-9e+-.]+) +(?P<yFlat>[0-9e+-.]+)( +[0-9e+-.]+){0,3} +(?P<dia>[0-9e+-.]+)$', re.IGNORECASE)
 
-def readPlDrillPosData(inFilePath):
+def readPlDrillPosData(inFilePath, useFlat=True):
     """Read data from a plDrillPos file
 
     Inputs:
     - inFilePath: path to file containing hole position data
+    - useFlat: if true x,y positions are flat, else focal x,y (as drilled) are used.
 
     Return:
     - dataList: sequence of dictionaries with keys: x, y, dia, name; only includes holes that are in bounds
@@ -40,6 +41,12 @@ def readPlDrillPosData(inFilePath):
     """
     nHolesRead = 0
     gotData = False
+    if useFlat:
+        xType = "xFlat"
+        yType = "yFlat"
+    else:
+        xType = "xFocal"
+        yType = "yFocal"
     dataList = []
 
     with file(inFilePath, "rU") as inFile:
@@ -60,12 +67,12 @@ def readPlDrillPosData(inFilePath):
                 gotData = True
                 nHolesRead += 1
                 dataDict = dataMatched.groupdict()
-                for key in ("x", "y", "dia"):
+                for key in (xType, yType, "dia"):
                     dataDict[key] = float(dataDict[key])
-                if dataDict["name"] in holenames and abs(dataDict["x"]) <= xMax and abs(dataDict["y"]) <= yMax:
+                if dataDict["name"] in holenames and abs(dataDict[xType]) <= xMax and abs(dataDict[yType]) <= yMax:
                     # data is for a hole of interest and that is in range
 
-                    radSq = dataDict["x"]**2 + dataDict["y"]**2
+                    radSq = dataDict[xType]**2 + dataDict[yType]**2
                     if radSq < 0.001:
                         continue # skip center hole
 
