@@ -4,6 +4,8 @@ from __future__ import print_function
 import argparse
 import os
 import glob
+import datetime
+import shutil
 
 from generateCMMData import generate37Holes, generateAllHoles, generateAllHolesFromFanuc
 
@@ -29,9 +31,10 @@ if __name__ == '__main__':
             raise RuntimeError("%s is not a %s file!"%(fileName, "plFanuc" if args.fanuc else "plDrillPos"))
         fileList = [fileName]
     useFlat = not args.focal
-
+    plateNums = []
     for f in fileList:
         print("Processing %s" % (f,))
+        plateNums.append(int(f.split("-")[1].split(".")[0]))
         if args.fanuc:
             res = generateAllHolesFromFanuc(f, basePath)
             print("Wrote %7s: %4d holes read; %4d in range; %4d written" % \
@@ -44,3 +47,19 @@ if __name__ == '__main__':
             res = generateAllHoles(f, basePath, useFlat)
             print("Wrote %7s: %4d holes read; %4d in range; %4d written" % \
                 (os.path.basename(res.toPath), res.nHolesRead, res.nHolesInRange, res.nHolesWritten))
+        # create directories and move files there
+    minNum = min(plateNums)
+    maxNum = max(plateNums)
+    datestr = datetime.datetime.now().strftime("%Y-%M")
+    dirName = "%i-%i %s"%(minNum, maxNum, datestr)
+    pathToHolePos = "/nfsmount/shopdc0/Hole position files"
+    newDir = os.path.join(pathToHolePos, dirName)
+    assert os.path.exists(pathToHolePos)
+    os.mkdir(newDir)
+    # get all the files we just created
+    nFiles = glob.glob("N*")
+    for f in nFiles:
+        shutil.copy(f, newDir)
+
+
+
