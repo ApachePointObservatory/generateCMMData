@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-from __future__ import division
-from __future__ import print_function
+
+
 import argparse
 import os
 import glob
@@ -48,19 +48,21 @@ if __name__ == '__main__':
             print("Wrote %7s: %4d holes read; %4d in range; %4d written" % \
                 (os.path.basename(res.toPath), res.nHolesRead, res.nHolesInRange, res.nHolesWritten))
         # create directories and move files there
-    minNum = min(plateNums)
-    maxNum = max(plateNums)
-    datestr = datetime.datetime.now().strftime("%Y-%m")
-    dirName = "%i-%i %s"%(minNum, maxNum, datestr)
-    pathToHolePos = "/nfsmount/shopdc0/Hole position files"
-    newDir = os.path.join(pathToHolePos, dirName)
-    assert os.path.exists(pathToHolePos)
-    os.mkdir(newDir)
-    # get all the files we just created
-    nFiles = glob.glob("N*")
-    for f in nFiles:
-        print("copying: %s to %s"%(f, newDir))
-        shutil.copyfile(f, os.path.join(newDir, os.path.basename(f)))
+
+
+    # minNum = min(plateNums)
+    # maxNum = max(plateNums)
+    # datestr = datetime.datetime.now().strftime("%Y-%m")
+    # dirName = "%i-%i %s"%(minNum, maxNum, datestr)
+    # pathToHolePos = "/nfsmount/shopdc0/Hole position files"
+    # newDir = os.path.join(pathToHolePos, dirName)
+    # assert os.path.exists(pathToHolePos)
+    # os.mkdir(newDir)
+    # # get all the files we just created
+    # nFiles = glob.glob("N*")
+    # for f in nFiles:
+    #     print("copying: %s to %s"%(f, newDir))
+    #     shutil.copyfile(f, os.path.join(newDir, os.path.basename(f)))
 
 
 

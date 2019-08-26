@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import with_statement
+
 """
 Generate data for the UW Brown and Sharp CMM from SDSS "plFaunic" files (which are used by the mill).
 
@@ -72,7 +72,7 @@ def generateAllHolesFromFanuc(inFilePath, outDir):
     try:
         platenum = int(re.split("[-.]", inName)[1])
     except:
-        raise RuntimeError, "cannot parse file name: %s" % (inName,)
+        raise RuntimeError("cannot parse file name: %s" % (inName,))
 
     dataList = readPlFanucDrillPosData(inFilePath)
     # nHolesInRange = len(dataList)
@@ -91,14 +91,15 @@ def generateAllHolesFromFanuc(inFilePath, outDir):
     # create output file
     outName = "N" + str(platenum) + "A"
     outPath = os.path.join(outDir, outName)
-    with file(outPath, "wb") as outFile:
+    # with open(outPath, "wb") as outFile:
+    with open(outPath, "w") as outFile:
         # write the header
-        outFile.write ("#XYZ SC2" + DOSTerm)
+        outFile.write("#XYZ SC2" + DOSTerm)
 
         # write the data
         for pt in orderedArr:
-            outFile.write ("%11.5f %11.5f  0.0 %8.5f" % (pt[0], pt[1], pt[2]))
-            outFile.write (DOSTerm)
+            outFile.write("%11.5f %11.5f  0.0 %8.5f" % (pt[0], pt[1], pt[2]))
+            outFile.write(DOSTerm)
             nHolesWritten += 1
 
     return genSummary.GenSummary(

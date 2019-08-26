@@ -11,7 +11,7 @@ History
 2014-01-16 CCS      Now recognizes "MANGA_SINGLE" holes.
 2015-01-13 CCS      Add flag for using x,y Focal vs Flat positions (anticipation of APOGEE-South)
 """
-from __future__ import with_statement
+
 import sys
 import re
 
@@ -49,7 +49,7 @@ def readPlDrillPosData(inFilePath, useFlat=True):
         yType = "yFocal"
     dataList = []
 
-    with file(inFilePath, "rU") as inFile:
+    with open(inFilePath, "rU") as inFile:
         for line in inFile:
             # skip blank lines
             if line == "\n":
@@ -61,7 +61,7 @@ def readPlDrillPosData(inFilePath, useFlat=True):
             # if not data, skip it -- an error if we already saw data
             if not dataMatched:
                 if gotData:
-                    raise RuntimeError, "bad data mixed in with good; bad data = :%s:" % (line)
+                    raise RuntimeError("bad data mixed in with good; bad data = :%s:" % (line))
             # else figure out if we want to write the data
             else:
                 gotData = True
@@ -80,7 +80,7 @@ def readPlDrillPosData(inFilePath, useFlat=True):
                     dataList.append(dataDict)
                 elif dataDict["name"] in ("GUIDE", "MANGA"):
                     # A manga or guide hole is out of cmm range.
-                    print >> sys.stderr, "Essential hole reported out of range, but written anyways", dataDict
+                    print("Essential hole reported out of range, but written anyways", dataDict, file=sys.stderr)
                     dataList.append(dataDict)
                     # raise RuntimeError("Essential hole out of measurement range.")
 
