@@ -34,7 +34,7 @@ if __name__ == '__main__':
     plateNums = []
     for f in fileList:
         print("Processing %s" % (f,))
-        plateNums.append(int(f.split("-")[1].split(".")[0]))
+        plateNums.append(int(f.split("-")[-1].split(".")[0])) # take last split incase other "-" appear in path eg apogee-manga
         if args.fanuc:
             res = generateAllHolesFromFanuc(f, basePath)
             print("Wrote %7s: %4d holes read; %4d in range; %4d written" % \
@@ -50,7 +50,7 @@ if __name__ == '__main__':
         # create directories and move files there
     minNum = min(plateNums)
     maxNum = max(plateNums)
-    datestr = datetime.datetime.now().strftime("%Y-%M")
+    datestr = datetime.datetime.now().strftime("%Y-%m")
     dirName = "%i-%i %s"%(minNum, maxNum, datestr)
     pathToHolePos = "/nfsmount/shopdc0/Hole position files"
     newDir = os.path.join(pathToHolePos, dirName)
@@ -59,7 +59,8 @@ if __name__ == '__main__':
     # get all the files we just created
     nFiles = glob.glob("N*")
     for f in nFiles:
-        shutil.copy(f, newDir)
+        print("copying: %s to %s"%(f, newDir))
+        shutil.copyfile(f, os.path.join(newDir, os.path.basename(f)))
 
 
 
