@@ -3,6 +3,7 @@ import RO.Comm.Generic
 RO.Comm.Generic.setFramework("tk")
 import RO.Wdg
 from .generate37Holes import generate37Holes
+from .generate400Holes import generate400Holes
 from . import generateAllHoles
 from . import version
 
@@ -13,7 +14,7 @@ class GenerateCMMDataWdg(RO.Wdg.DropletApp):
     """
     def __init__(self, master, filePathList=None):
         """Construct a GenerateCMMData
-        
+
         Inputs:
         - master: master widget; should be root
         - filePathList: list of files to process
@@ -26,9 +27,9 @@ class GenerateCMMDataWdg(RO.Wdg.DropletApp):
             patterns = "plDrillPos*.par",
             exclDirPatterns = ".*",
         )
-        
+
         self.logWdg.addMsg("""GenerateCMMData version %s""" % (version.__version__,))
-        
+
         if filePathList:
             self.processFileList(filePathList)
 
@@ -40,8 +41,11 @@ class GenerateCMMDataWdg(RO.Wdg.DropletApp):
         res = generate37Holes(filePath, outDir)
         self.logWdg.addMsg("Wrote %7s: %4d holes read; %4d in range; %4d written" % \
             (os.path.basename(res.toPath), res.nHolesRead, res.nHolesInRange, res.nHolesWritten))
-        
+
+        res = generate400Holes(filePath, outDir)
+        self.logWdg.addMsg("Wrote %7s: %4d holes read; %4d in range; %4d written" % \
+            (os.path.basename(res.toPath), res.nHolesRead, res.nHolesInRange, res.nHolesWritten))
+
         res = generateAllHoles(filePath, outDir)
         self.logWdg.addMsg("Wrote %7s: %4d holes read; %4d in range; %4d written" % \
             (os.path.basename(res.toPath), res.nHolesRead, res.nHolesInRange, res.nHolesWritten))
-        
