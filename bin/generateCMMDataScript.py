@@ -7,7 +7,7 @@ import glob
 import datetime
 import shutil
 
-from generateCMMData import generate37Holes, generateAllHoles, generateAllHolesFromFanuc
+from generateCMMData import generate37Holes, generate400Holes, generateAllHoles, generateAllHolesFromFanuc
 
 if __name__ == '__main__':
 
@@ -44,6 +44,10 @@ if __name__ == '__main__':
             print("Wrote %7s: %4d holes read; %4d in range; %4d written" % \
                 (os.path.basename(res.toPath), res.nHolesRead, res.nHolesInRange, res.nHolesWritten))
 
+            res = generate400Holes(f, basePath, useFlat)
+            print("Wrote %7s: %4d holes read; %4d in range; %4d written" % \
+                (os.path.basename(res.toPath), res.nHolesRead, res.nHolesInRange, res.nHolesWritten))
+
             res = generateAllHoles(f, basePath, useFlat)
             print("Wrote %7s: %4d holes read; %4d in range; %4d written" % \
                 (os.path.basename(res.toPath), res.nHolesRead, res.nHolesInRange, res.nHolesWritten))
@@ -63,6 +67,3 @@ if __name__ == '__main__':
     # for f in nFiles:
     #     print("copying: %s to %s"%(f, newDir))
     #     shutil.copyfile(f, os.path.join(newDir, os.path.basename(f)))
-
-
-
