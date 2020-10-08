@@ -2,8 +2,7 @@ import os.path
 import RO.Comm.Generic
 RO.Comm.Generic.setFramework("tk")
 import RO.Wdg
-from .generate37Holes import generate37Holes
-from .generate400Holes import generate400Holes
+from .generate80Holes import generate80Holes
 from . import generateAllHoles
 from . import version
 
@@ -38,11 +37,8 @@ class GenerateCMMDataWdg(RO.Wdg.DropletApp):
         """
         outDir, fileName = os.path.split(filePath)
         self.logWdg.addMsg("Processing %s" % (fileName,))
-        res = generate37Holes(filePath, outDir)
-        self.logWdg.addMsg("Wrote %7s: %4d holes read; %4d in range; %4d written" % \
-            (os.path.basename(res.toPath), res.nHolesRead, res.nHolesInRange, res.nHolesWritten))
 
-        res = generate400Holes(filePath, outDir)
+        res = generate80Holes(filePath, outDir)
         self.logWdg.addMsg("Wrote %7s: %4d holes read; %4d in range; %4d written" % \
             (os.path.basename(res.toPath), res.nHolesRead, res.nHolesInRange, res.nHolesWritten))
 
